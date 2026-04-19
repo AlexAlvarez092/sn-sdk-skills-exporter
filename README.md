@@ -1,15 +1,10 @@
 # ServiceNow SDK Skills Exporter
 
-This script extracts all topics from the `now-sdk explain` command and saves each topic's explanation into a separate Markdown file in the `now-sdk-docs` directory.
+This script extracts all topics from the `npx @servicenow/sdk explain` command and saves each topic's explanation into a separate Markdown file in the `.agents/skills` directory.
 
 ## Usage
 
-1. Make sure you have the ServiceNow SDK installed and configured.
-
-```
-npm install -g @servicenow/sdk
-now-sdk --version
-```
+1. Copy the script to the root directory of your project.
 
 2. Grant execute permissions to the script:
 

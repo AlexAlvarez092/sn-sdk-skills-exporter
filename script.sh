@@ -1,4 +1,6 @@
-OUTPUT_DIR="./now-sdk-docs"
+AGENTS_DIR=".agents"
+OUTPUT_DIR="$AGENTS_DIR/skills"
+mkdir -p "$AGENTS_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 echo "Obtaining topics from now-sdk explain..."
@@ -9,7 +11,9 @@ echo "Found $(echo "$topics" | wc -l | tr -d ' ') topics"
 echo "$topics" | while read -r topic; do
   [ -z "$topic" ] && continue
   echo "Exporting $topic..."
-  npx @servicenow/sdk explain "$topic" > "$OUTPUT_DIR/$topic.md"
+  TOPIC_DIR="$OUTPUT_DIR/$topic"
+  mkdir -p "$TOPIC_DIR"
+  npx @servicenow/sdk explain "$topic" > "$TOPIC_DIR/SKILL.md"
 done
 
 echo "Export completed"
