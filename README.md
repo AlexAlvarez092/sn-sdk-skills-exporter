@@ -1,22 +1,55 @@
 # ServiceNow SDK Skills Exporter
 
-This repository provides a script that extracts all topics from `npx @servicenow/sdk explain` and writes each topic into its own Markdown file under `.agents/skills`.
+The ServiceNow SDK (`@servicenow/sdk`) introduces a development model based on **Fluent APIs** and code-defined metadata. To properly understand and use these APIs, the SDK provides the command:
 
-The generated files can then be consumed by coding agents (including GitHub Copilot agent workflows) as reusable skill documentation.
+```bash
+npx @servicenow/sdk explain <topic>
+```
 
-## Why This Exists
+This command returns official documentation and examples directly generated from the SDK itself.
 
-In the official ServiceNow SDK repository, the `now-sdk-setup` and `now-sdk-explain` skills are designed for agentic coding environments such as Claude Code, Codex, Cursor, and similar tools.
+## The Problem
 
-Those environments can generally execute shell commands as part of their autonomous workflow, so they can run the SDK explain command and transform the output into internal documentation.
+AI-based code generation tools do not all behave in the same way.
 
-GitHub Copilot, in many real-world setups, does not reliably perform that same end-to-end autonomous flow by itself (run command, capture output for every topic, and persist all skill files) without explicit user-driven execution and environment support. Common blockers include:
+### Tooling-enabled agents
 
-- No guaranteed autonomous shell execution in every Copilot context.
-- Security and permission boundaries around local command execution.
-- Limited persistence of generated artifacts unless you explicitly save them in the repository.
+Agents such as Claude Code are designed to:
 
-Because of this, this script makes the process deterministic: you run one command, and the full skill set is generated as versioned Markdown files.
+* Execute system commands
+* Query documentation dynamically
+* Incorporate tool outputs directly into their reasoning loop
+
+This allows them to use now-sdk explain at runtime and generate accurate, context-aware code.
+
+### Limitations of Copilot
+
+In contrast, GitHub Copilot:
+
+* Does not execute system commands automatically
+* Does not support autonomous tool calling
+* Relies exclusively on the context available in the workspace
+
+As a result, Copilot cannot independently query now-sdk explain. This leads to issues such as:
+
+* Incorrect usage of Fluent APIs
+* Mixing legacy Glide patterns with SDK patterns
+* Incomplete or hallucinated implementations
+
+## The Solution
+
+This repository exists to bridge that gap. The included script:
+
+* Executes now-sdk explain for each available topic
+* Extracts the generated documentation
+* Stores it as local files within the project
+
+This effectively makes the official SDK documentation part of the local workspace context. With these files available:
+
+* Copilot can access real SDK documentation through workspace context
+* The likelihood of hallucinated APIs is reduced
+* Generated code becomes more consistent and accurate
+* Behavior is closer to tool-enabled agents
 
 ## How to Configure Copilot to Use These Skills
 
